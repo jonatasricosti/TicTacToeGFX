@@ -5,8 +5,8 @@ SDL_Event evento;
 SDL_Surface *tela = NULL;
 bool executando = true;
 
-const int screen_width = 640;
-const int screen_height = 480;
+const int screen_width = 480;
+const int screen_height = 640;
 const int screen_bpp = 32;
 
 // para o framerate
@@ -49,6 +49,8 @@ void DrawImage(int x, int y, SDL_Surface *image)
 
 SDL_Surface *vLine = NULL;
 SDL_Surface *hLine = NULL;
+SDL_Surface *xImage = NULL;
+SDL_Surface *oImage = NULL;
 
 // use essa função pra carregar arquivos
 // nota: essa função só deve ser chamada no começo do programa
@@ -56,6 +58,8 @@ void LoadFiles()
 {
     vLine = SDL_LoadBMP("gfx/linhav.bmp");
     hLine = SDL_LoadBMP("gfx/linhah.bmp");
+    xImage = fundo_transparente("gfx/x.bmp", 0,255,255);
+    oImage = fundo_transparente("gfx/o.bmp", 0,255,255);
 }
 
 
@@ -65,20 +69,49 @@ void CloseFiles()
 {
     SDL_FreeSurface(vLine);
     SDL_FreeSurface(hLine);
+    SDL_FreeSurface(xImage);
+    SDL_FreeSurface(oImage);
 }
 
-// essa função desenha a o tabuleiro e tira uma foto da tela
+// esse array reprenta o tabuleiro
+char board[9] = {'X','X','O','O','X','X','X','O','O'};;
+
+// essa função reseta o jogo
+void ResetGame()
+{
+	for(int i = 0; i < 9; i++)
+	{
+		board[i] = 0;
+	}
+}
+
+// use essa função pra desenhar 'X' ou o 'O'
+void DrawX_and_O()
+{
+    // esse código desenha o 'X' ou o 'O' se tiver o valor deles no array board
+    for(int i = 0; i < 9; i++)
+    {
+        if(board[i] == 'X')
+        {
+            DrawImage((i%3)*160, (i/3)*160, xImage);
+        }
+
+        if(board[i] == 'O')
+        {
+            DrawImage((i%3)*160, (i/3)*160, oImage);
+        }
+    }
+}
+
+// essa função desenha o tabuleiro
 void DrawBoard()
 {
-    int margem = 120;
+    // desenha o tabuleiro
+    DrawImage(vLine->h/3,0,vLine);
+    DrawImage(2*vLine->h/3,0,vLine);
+    DrawImage(0,hLine->w/3,hLine);
+    DrawImage(0,2*hLine->w/3,hLine);
 
-    DrawImage(100+margem,0,vLine);
-    DrawImage(screen_width-100-margem,0,vLine);
-
-    DrawImage(0,10+margem,hLine);
-    DrawImage(0,400-10-margem,hLine);
-
-    SDL_SaveBMP(tela, "gfx/board.bmp");
 }
 
 int main(int argc, char*args[])
@@ -86,6 +119,8 @@ int main(int argc, char*args[])
 SDL_Init(SDL_INIT_EVERYTHING);
 tela = SDL_SetVideoMode(screen_width,screen_height,screen_bpp,SDL_SWSURFACE);
 LoadFiles();
+
+//ResetGame();
 
 // game loop
 while(executando)
@@ -102,6 +137,7 @@ while(executando)
 
     SDL_FillRect(tela, 0, 0xffffff);
 
+    DrawX_and_O();
     DrawBoard();
 
     SDL_Flip(tela);
