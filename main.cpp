@@ -128,10 +128,60 @@ int round = 0; // essa variável serve pra lógica de empate
 char* status;
 
 // esse array reprenta o tabuleiro
-char board[9] = {'X','O','X',
-                 'X','O','O',
-                 'O','O','X'};
+char board[9];
 
+
+// use essa função pra colocar um 'X' ou 'O' no tabuleiro
+// id posição do array Type = 'X' ou 'O'
+void setCell(int id, char Type)
+{
+    if(id < 0 || id >=9) return;
+    board[id] = Type;
+    round++;
+}
+
+// essa função pega a posição x e y e usa na função setCell
+void ButtonDown(int mx, int my)
+{
+    // conta de matemática pra converte as posições do mouse em número pra colocar no array board
+    int id = mx/160; // mx ou my == 0,1,2,3
+    id = id + ((my/160)*3);
+
+    if(board[id] != 0)
+    {
+        return;
+    }
+
+    if(estado == TURN_X)
+    {
+        setCell(id, 'X');
+        estado = TURN_O;
+    }
+
+    else
+    {
+        setCell(id, 'O');
+        estado = TURN_X;
+    }
+}
+
+
+// programação do mouse
+void mouse()
+{
+    int x,y;
+    if(evento.type == SDL_MOUSEBUTTONDOWN)
+    {
+        // se apertou o botão esquerdo do mouse
+        if(evento.button.button == SDL_BUTTON_LEFT)
+        {
+            x = evento.button.x;
+            y = evento.button.y;
+
+            ButtonDown(x,y);
+        }
+    }
+}
 
 // essa função verifica se o 'X' ganhou
 void checkXWin()
@@ -259,6 +309,7 @@ void ResetGame()
 	}
 
 	round = 0;
+	estado = rand() % 2;
 }
 
 // use essa função pra desenhar 'X' ou o 'O'
@@ -300,6 +351,22 @@ void DrawWin()
     {
         DrawTextCenter(0,180,status,0,0,255,ttfFile);
     }
+
+
+    DrawTextCenter(0,200,"Aperte f pra resetar o jogo", 0,0,0,ttfFile);
+    DrawTextCenter(0,220,"Aperte escape pra sair do jogo", 0,0,0,ttfFile);
+
+
+    Uint8 * tecla = SDL_GetKeyState(NULL);
+    if(tecla[SDLK_f])
+    {
+        ResetGame();
+    }
+
+    if(tecla[SDLK_ESCAPE])
+    {
+        executando = false;
+    }
 }
 
 int main(int argc, char*args[])
@@ -313,7 +380,7 @@ TTF_Init();
 LoadFiles();
 
 
-//ResetGame();
+ResetGame();
 
 // game loop
 while(executando)
@@ -321,6 +388,17 @@ while(executando)
     start = SDL_GetTicks();
     while(SDL_PollEvent(&evento))
     {
+
+        if(estado == TURN_X)
+        {
+            mouse();
+        }
+
+        else if(estado == TURN_O)
+        {
+            mouse();
+        }
+
         // clicou no x da janela
         if(evento.type == SDL_QUIT)
         {
@@ -330,9 +408,15 @@ while(executando)
 
     SDL_FillRect(tela, 0, 0xffffff);
 
+    switch(estado)
+    {
+        case X_WIN: DrawWin(); break;
+        case O_WIN: DrawWin(); break;
+        //case TIE: //draw(); break; break;
+    }
+
     DrawX_and_O();
     DrawBoard();
-    DrawWin();
     checkXWin();
     checkOWin();
     checkTie();
