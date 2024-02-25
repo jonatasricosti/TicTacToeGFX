@@ -130,7 +130,6 @@ char* status;
 // esse array reprenta o tabuleiro
 char board[9];
 
-
 // use essa função pra colocar um 'X' ou 'O' no tabuleiro
 // id posição do array Type = 'X' ou 'O'
 void setCell(int id, char Type)
@@ -143,9 +142,14 @@ void setCell(int id, char Type)
 // essa função pega a posição x e y e usa na função setCell
 void ButtonDown(int mx, int my)
 {
-    // conta de matemática pra converte as posições do mouse em número pra colocar no array board
-    int id = mx/160; // mx ou my == 0,1,2,3
+    int id = mx/160;
     id = id + ((my/160)*3);
+
+    // não deixa clicar fora da área do jogo
+    if(mx > 480 || my > 480)
+    {
+        return;
+    }
 
     if(board[id] != 0)
     {
@@ -369,6 +373,27 @@ void DrawWin()
     }
 }
 
+// essa função desenha o empate
+void DrawTie()
+{
+
+	DrawTextCenter(0,180,"Oops parece que houve um empate",255,0,0, ttfFile);
+    DrawTextCenter(0,200,"Aperte f pra resetar o jogo", 0,0,0,ttfFile);
+    DrawTextCenter(0,220,"Aperte escape pra sair do jogo", 0,0,0,ttfFile);
+
+
+    Uint8 * tecla = SDL_GetKeyState(NULL);
+    if(tecla[SDLK_f])
+    {
+        ResetGame();
+    }
+
+    if(tecla[SDLK_ESCAPE])
+    {
+        executando = false;
+    }
+}
+
 int main(int argc, char*args[])
 {
 SDL_Init(SDL_INIT_EVERYTHING);
@@ -376,11 +401,12 @@ tela = SDL_SetVideoMode(screen_width,screen_height,screen_bpp,SDL_SWSURFACE);
 
 SDL_WM_SetCaption("Jogo da velha", NULL);
 
+
 TTF_Init();
 LoadFiles();
 
-
 ResetGame();
+
 
 // game loop
 while(executando)
@@ -408,11 +434,14 @@ while(executando)
 
     SDL_FillRect(tela, 0, 0xffffff);
 
+    // os estados do jogo
     switch(estado)
     {
+        case TURN_X: DrawTextCenter(0,180,"Vez do X", 0,0,0,ttfFile); break;
+        case TURN_O: DrawTextCenter(0,180,"Vez do O", 0,0,0,ttfFile); break;
         case X_WIN: DrawWin(); break;
         case O_WIN: DrawWin(); break;
-        //case TIE: //draw(); break; break;
+        case TIE: DrawTie(); break;
     }
 
     DrawX_and_O();
