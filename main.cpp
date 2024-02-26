@@ -294,21 +294,22 @@ void checkOWin()
 	{
 		status = "Parabéns O ganhou na terceira linha horizontal!";
 		estado = O_WIN;
-		DrawCutImage(0,0,0,480,160,480,ricosImage);
+		DrawCutImage(0,320,0,0,480,160,ricosImage);
 	}
 
 	if(board[0] == 'O' && board[3] == 'O' && board[6] == 'O')
 	{
 		status = "Parabéns O ganhou na primeira linha vertical!";
 		estado = O_WIN;
-		DrawCutImage(160,0,0,480,160,480,ricosImage);
+		DrawCutImage(0,0,0,480,160,480,ricosImage);
 	}
+
 
 	if(board[1] == 'O' && board[4] == 'O' && board[7] == 'O')
 	{
 		status = "Parabéns O ganhou na segunda linha vertical!";
 		estado = O_WIN;
-		DrawCutImage(320,0,0,480,160,480,ricosImage);
+		DrawCutImage(160,0,0,480,160,480,ricosImage);
 	}
 
 
@@ -316,7 +317,7 @@ void checkOWin()
 	{
 		status = "Parabéns O ganhou na terceira linha vertical!";
 		estado = O_WIN;
-		DrawCutImage(0,0,0,960,480,480,ricosImage);
+		DrawCutImage(320,0,0,480,160,480,ricosImage);
 	}
 
 	// diagonais
