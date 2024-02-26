@@ -47,6 +47,23 @@ void DrawImage(int x, int y, SDL_Surface *image)
     SDL_BlitSurface(image, NULL, tela, &mover);
 }
 
+// use essa função pra desenhar uma imagem cortada na tela
+// nota: os valores de corte você pode pegar no gimp
+void DrawCutImage(int x, int y, int cx, int cy, int cw, int ch, SDL_Surface *image)
+{
+    SDL_Rect mover;
+    mover.x = x;
+    mover.y = y;
+
+    SDL_Rect corte;
+    corte.x = cx;
+    corte.y = cy;
+    corte.w = cw;
+    corte.h = ch;
+
+    SDL_BlitSurface(image, &corte, tela, &mover);
+}
+
 // use essa função pra desenhar texto na tela usando fonte ttf
 void DrawText(int x, int y, char *text, Uint8 red, Uint8 green, Uint8 blue, TTF_Font *font)
 {
@@ -85,6 +102,7 @@ SDL_Surface *vLine = NULL;
 SDL_Surface *hLine = NULL;
 SDL_Surface *xImage = NULL;
 SDL_Surface *oImage = NULL;
+SDL_Surface *ricosImage = NULL;
 
 TTF_Font *ttfFile = NULL;
 
@@ -96,6 +114,8 @@ void LoadFiles()
     hLine = SDL_LoadBMP("gfx/linhah.bmp");
     xImage = fundo_transparente("gfx/x.bmp", 0,255,255);
     oImage = fundo_transparente("gfx/o.bmp", 0,255,255);
+
+    ricosImage = fundo_transparente("gfx/ricos.bmp",0,255,255);
 
     ttfFile = TTF_OpenFont("fontes/times.ttf", 23);
 }
@@ -110,6 +130,7 @@ void CloseFiles()
     SDL_FreeSurface(xImage);
     SDL_FreeSurface(oImage);
     TTF_CloseFont(ttfFile);
+    SDL_FreeSurface(ricosImage);
 }
 
 // os estados de tela do jogo
@@ -194,36 +215,45 @@ void checkXWin()
 	{
 		status = "Parabéns X ganhou na primeira linha horizontal!";
 		estado = X_WIN;
+		DrawCutImage(0,0,0,0,480,160,ricosImage);
 	}
 
 	if(board[3] == 'X' && board[4] == 'X' && board[5] == 'X')
 	{
 		status = "Parabéns X ganhou na segunda linha horizontal!";
 		estado = X_WIN;
+		DrawCutImage(0,160,0,0,480,160,ricosImage);
 	}
+
 
 	if(board[6] == 'X' && board[7] == 'X' && board[8] == 'X')
 	{
 		status = "Parabéns X ganhou na terceira linha horizontal!";
 		estado = X_WIN;
+		DrawCutImage(0,320,0,0,480,160,ricosImage);
 	}
 
 	if(board[0] == 'X' && board[3] == 'X' && board[6] == 'X')
 	{
 		status = "Parabéns X ganhou na primeira linha vertical!";
 		estado = X_WIN;
+		DrawCutImage(0,0,0,480,160,480,ricosImage);
 	}
+
 
 	if(board[1] == 'X' && board[4] == 'X' && board[7] == 'X')
 	{
 		status = "Parabéns X ganhou na segunda linha vertical!";
 		estado = X_WIN;
+		DrawCutImage(160,0,0,480,160,480,ricosImage);
 	}
+
 
 	if(board[2] == 'X' && board[5] == 'X' && board[8] == 'X')
 	{
 		status = "Parabéns X ganhou na terceira linha vertical!";
 		estado = X_WIN;
+		DrawCutImage(320,0,0,480,160,480,ricosImage);
 	}
 
 	// diagonais
@@ -231,12 +261,14 @@ void checkXWin()
 	{
 		status = "Parabéns X ganhou na primeira diagonal!";
 		estado = X_WIN;
+		DrawCutImage(0,0,0,960,480,480,ricosImage);
 	}
 
 	if(board[2] == 'X' && board[4] == 'X' && board[6] == 'X')
 	{
 		status = "Parabéns X ganhou na segunda diagonal!";
 		estado = X_WIN;
+		DrawCutImage(0,0,0,1440,480,480,ricosImage);
 	}
 }
 
@@ -248,36 +280,43 @@ void checkOWin()
 	{
 		status = "Parabéns O ganhou na primeira linha horizontal!";
 		estado = O_WIN;
+		DrawCutImage(0,0,0,0,480,160,ricosImage);
 	}
 
 	if(board[3] == 'O' && board[4] == 'O' && board[5] == 'O')
 	{
 		status = "Parabéns O ganhou na segunda linha horizontal!";
 		estado = O_WIN;
+		DrawCutImage(0,160,0,0,480,160,ricosImage);
 	}
 
 	if(board[6] == 'O' && board[7] == 'O' && board[8] == 'O')
 	{
 		status = "Parabéns O ganhou na terceira linha horizontal!";
 		estado = O_WIN;
+		DrawCutImage(0,0,0,480,160,480,ricosImage);
 	}
 
 	if(board[0] == 'O' && board[3] == 'O' && board[6] == 'O')
 	{
 		status = "Parabéns O ganhou na primeira linha vertical!";
 		estado = O_WIN;
+		DrawCutImage(160,0,0,480,160,480,ricosImage);
 	}
 
 	if(board[1] == 'O' && board[4] == 'O' && board[7] == 'O')
 	{
 		status = "Parabéns O ganhou na segunda linha vertical!";
 		estado = O_WIN;
+		DrawCutImage(320,0,0,480,160,480,ricosImage);
 	}
+
 
 	if(board[2] == 'O' && board[5] == 'O' && board[8] == 'O')
 	{
 		status = "Parabéns O ganhou na terceira linha vertical!";
 		estado = O_WIN;
+		DrawCutImage(0,0,0,960,480,480,ricosImage);
 	}
 
 	// diagonais
@@ -285,12 +324,14 @@ void checkOWin()
 	{
 		status = "Parabéns O ganhou na primeira diagonal!";
 		estado = O_WIN;
+		DrawCutImage(0,0,0,960,480,480,ricosImage);
 	}
 
 	if(board[2] == 'O' && board[4] == 'O' && board[6] == 'O')
 	{
 		status = "Parabéns O ganhou na segunda diagonal!";
 		estado = O_WIN;
+		DrawCutImage(0,0,0,1440,480,480,ricosImage);
 	}
 }
 
@@ -353,7 +394,7 @@ void DrawWin()
 
     else if(estado == O_WIN)
     {
-        DrawTextCenter(0,180,status,0,0,255,ttfFile);
+        DrawTextCenter(0,180,status,0,162,232,ttfFile);
     }
 
 
