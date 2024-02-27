@@ -63,21 +63,6 @@ void DrawCutImage(int x, int y, int cx, int cy, int cw, int ch, SDL_Surface *ima
     SDL_BlitSurface(image, &corte, tela, &mover);
 }
 
-// use essa função pra desenhar texto na tela usando fonte ttf
-void DrawText(int x, int y, char *text, Uint8 red, Uint8 green, Uint8 blue, TTF_Font *font)
-{
-    SDL_Surface *buffer = NULL;
-    SDL_Color color = {red, green, blue};
-
-    buffer = TTF_RenderText_Solid(font, text, color);
-
-    SDL_Rect mover;
-    mover.x = x;
-    mover.y = y;
-
-    SDL_BlitSurface(buffer, NULL, tela, &mover);
-    SDL_FreeSurface(buffer);
-}
 
 // use essa função pra desenhar um texto no centro da tela usando fonte ttf
 void DrawTextCenter(int x, int y, char *text, Uint8 red, Uint8 green, Uint8 blue, TTF_Font *font)
@@ -477,7 +462,6 @@ while(executando)
         SDL_Delay(framerate - (SDL_GetTicks()-start));
     }
 }
-
 
 TTF_Quit();
 CloseFiles();
