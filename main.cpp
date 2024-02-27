@@ -1,7 +1,6 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-
 SDL_Event evento;
 SDL_Surface *tela = NULL;
 bool executando = true;
@@ -97,7 +96,6 @@ void DrawTextCenter(int x, int y, char *text, Uint8 red, Uint8 green, Uint8 blue
 }
 
 
-
 SDL_Surface *vLine = NULL;
 SDL_Surface *hLine = NULL;
 SDL_Surface *xImage = NULL;
@@ -114,12 +112,10 @@ void LoadFiles()
     hLine = SDL_LoadBMP("gfx/linhah.bmp");
     xImage = fundo_transparente("gfx/x.bmp", 0,255,255);
     oImage = fundo_transparente("gfx/o.bmp", 0,255,255);
-
     ricosImage = fundo_transparente("gfx/ricos.bmp",0,255,255);
 
     ttfFile = TTF_OpenFont("fontes/times.ttf", 23);
 }
-
 
 // use essa função pra fechar arquivos
 // nota: essa função só deve ser chamada no final do programa
@@ -146,7 +142,7 @@ enum state
 int estado = TURN_X; // a variável estado muda a tela do jogo
 int round = 0; // essa variável serve pra lógica de empate
 
-char* status;
+char* status; // essa variável coloca o texto na tela
 
 // esse array reprenta o tabuleiro
 char board[9];
@@ -194,16 +190,12 @@ void ButtonDown(int mx, int my)
 // programação do mouse
 void mouse()
 {
-    int x,y;
     if(evento.type == SDL_MOUSEBUTTONDOWN)
     {
         // se apertou o botão esquerdo do mouse
         if(evento.button.button == SDL_BUTTON_LEFT)
         {
-            x = evento.button.x;
-            y = evento.button.y;
-
-            ButtonDown(x,y);
+            ButtonDown(evento.button.x,evento.button.y);
         }
     }
 }
@@ -225,7 +217,6 @@ void checkXWin()
 		DrawCutImage(0,160,0,0,480,160,ricosImage);
 	}
 
-
 	if(board[6] == 'X' && board[7] == 'X' && board[8] == 'X')
 	{
 		status = "Parabéns X ganhou na terceira linha horizontal!";
@@ -240,14 +231,12 @@ void checkXWin()
 		DrawCutImage(0,0,0,480,160,480,ricosImage);
 	}
 
-
 	if(board[1] == 'X' && board[4] == 'X' && board[7] == 'X')
 	{
 		status = "Parabéns X ganhou na segunda linha vertical!";
 		estado = X_WIN;
 		DrawCutImage(160,0,0,480,160,480,ricosImage);
 	}
-
 
 	if(board[2] == 'X' && board[5] == 'X' && board[8] == 'X')
 	{
@@ -271,7 +260,6 @@ void checkXWin()
 		DrawCutImage(0,0,0,1440,480,480,ricosImage);
 	}
 }
-
 
 // essa função verifica se o 'O' ganhou
 void checkOWin()
@@ -304,14 +292,12 @@ void checkOWin()
 		DrawCutImage(0,0,0,480,160,480,ricosImage);
 	}
 
-
 	if(board[1] == 'O' && board[4] == 'O' && board[7] == 'O')
 	{
 		status = "Parabéns O ganhou na segunda linha vertical!";
 		estado = O_WIN;
 		DrawCutImage(160,0,0,480,160,480,ricosImage);
 	}
-
 
 	if(board[2] == 'O' && board[5] == 'O' && board[8] == 'O')
 	{
@@ -398,10 +384,8 @@ void DrawWin()
         DrawTextCenter(0,180,status,0,162,232,ttfFile);
     }
 
-
     DrawTextCenter(0,200,"Aperte f pra resetar o jogo", 0,0,0,ttfFile);
     DrawTextCenter(0,220,"Aperte escape pra sair do jogo", 0,0,0,ttfFile);
-
 
     Uint8 * tecla = SDL_GetKeyState(NULL);
     if(tecla[SDLK_f])
@@ -418,11 +402,9 @@ void DrawWin()
 // essa função desenha o empate
 void DrawTie()
 {
-
 	DrawTextCenter(0,180,"Oops parece que houve um empate",255,0,0, ttfFile);
     DrawTextCenter(0,200,"Aperte f pra resetar o jogo", 0,0,0,ttfFile);
     DrawTextCenter(0,220,"Aperte escape pra sair do jogo", 0,0,0,ttfFile);
-
 
     Uint8 * tecla = SDL_GetKeyState(NULL);
     if(tecla[SDLK_f])
@@ -439,16 +421,13 @@ void DrawTie()
 int main(int argc, char*args[])
 {
 SDL_Init(SDL_INIT_EVERYTHING);
+SDL_putenv("SDL_VIDEO_WINDOW_POS=center");
 tela = SDL_SetVideoMode(screen_width,screen_height,screen_bpp,SDL_SWSURFACE);
-
 SDL_WM_SetCaption("Jogo da velha", NULL);
-
 
 TTF_Init();
 LoadFiles();
-
 ResetGame();
-
 
 // game loop
 while(executando)
@@ -491,7 +470,6 @@ while(executando)
     checkXWin();
     checkOWin();
     checkTie();
-
 
     SDL_Flip(tela);
     if(framerate > (SDL_GetTicks()-start))
