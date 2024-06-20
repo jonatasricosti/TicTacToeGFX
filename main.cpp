@@ -347,6 +347,7 @@ void DrawX_and_O()
     }
 }
 
+
 // essa função desenha o tabuleiro
 void DrawBoard()
 {
@@ -357,6 +358,7 @@ void DrawBoard()
     DrawImage(0,320,hLine);
 }
 
+// essa função desenha o texto de quem ganhou
 void DrawWin()
 {
     if(estado == X_WIN)
@@ -468,3 +470,4 @@ CloseFiles();
 SDL_Quit();
 return 0;
 }
+
